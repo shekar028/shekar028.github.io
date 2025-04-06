@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <title>Animated Apology Popup</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .moon {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 100px;
+            height: 100px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes shoot {
+            0% { 
+                transform: translateY(100vh) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(30vh) scale(1);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(0vh) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes explode {
+            0% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(25);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(45);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slow-blend {
+            0% { 
+                opacity: 0;
+                filter: blur(10px);
+            }
+            100% { 
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .moon {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        }
+
+        .popup {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96c93d);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.7);
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            position: relative;
+            z-index: 100;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .heart {
+            color: #ff4d4d;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: heartBeat 1.2s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .accepted {
+            background: linear-gradient(135deg, #00f260, #0575e6, #00f260) !important;
+        }
+
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #FF8E53, #FE6B8B);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+            transition: top 0.5s ease;
+            z-index: 2000;
+        }
+
+        .thanks-message {
+            display: none;
+            font-size: 36px;
+            font-weight: 500;
+            opacity: 0;
+            letter-spacing: 2px;
+            color: #ffffff;
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            position: fixed;
+            bottom: 15%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 2000;
+            width: 100%;
+            font-style: italic;
+        }
+
+        .thanks-message.show {
+            display: block;
+            animation: slow-blend 3s ease-in-out forwards;
+            text-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.9),
+                0 0 60px rgba(255, 255, 255, 0.5),
+                0 0 90px rgba(255, 255, 255, 0.3);
+        }
+
+        .background-message {
+            display: none;
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 0 0 15px 15px;
+            font-size: 24px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            z-index: 2000;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+        }
+
+        .background-message.show {
+            display: block;
+            animation: messageAppear 4s ease-in-out forwards;
+        }
+
+        @keyframes messageAppear {
+            0% { 
+                opacity: 0;
+                transform: translateX(-50%) translateY(-100%);
+            }
+            20% { 
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            80% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateX(-50%) translateY(-100%);
+            }
+        }
+
+        .notification.show {
+            display: block;
+            animation: cinematic-fade 9s ease-in-out forwards;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="night-sky" id="nightSky">
+        <div class="moon"></div>
+    </div>
+    <div class="background-message" id="bgMessage">Kannaya accepted apologies 😊</div>
+    <div class="notification" id="notification">Kannaya has accepted your apology! 🎉</div>
+    <div class="thanks-message" id="thanksMessage">Thanks rha! ✨</div>
+    <div class="popup">
+        <div class="heart">❤️</div>
+        <h2>I'm Sorry, Kannaya!</h2>
+        <p>I sincerely apologize for any inconvenience caused.<br>Please forgive me.</p>
+        <button onclick="closePopup()">Accept Apology</button>
+    </div>
+
+    <script>
+        // Request notification permission when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            Notification.requestPermission();
+        });
+
+        // Function to show browser notification
+        function showBrowserNotification() {
+            if (Notification.permission === "granted") {
+                new Notification("Apology Accepted! 💖", {
+                    body: "Kannaya has forgiven you with love!",
+                    icon: "https://em-content.zobj.net/source/microsoft-teams/363/sparkling-heart_1f496.png"
+                });
+            }
+        }
+
+        // Create stars
+        function createStars() {
+            const nightSky = document.getElementById('nightSky');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 1 + 's';
+                nightSky.appendChild(star);
+            }
+        }
+
+
+
+        // Create stars
+        function createStars() {
+            const nightSky = document.getElementById('nightSky');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 1 + 's';
+                nightSky.appendChild(star);
+            }
+        }
+
+        // Initialize stars
+        createStars();
+
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+        }
+
+        function closePopup() {
+            const popup = document.querySelector('.popup');
+            popup.classList.add('accepted');
+            
+            // Show popup alert first
+            alert('Kannaya accepted apologies 😊');
+
+            // Show on-screen notification
+            showNotification();
+
+            // Show thanks message immediately with slow blend
+            const thanksMessage = document.getElementById('thanksMessage');
+            thanksMessage.classList.add('show');
+
+            // Show browser notification
+            showBrowserNotification();
+
+            setTimeout(() => {
+                popup.style.animation = 'cinematic-fade 3s ease-in-out forwards';
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            }, 9000);
+        }
+    </script>
+</body>
+</html>
